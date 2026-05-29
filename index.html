@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartLux | E-commerce Legendario de Domótica y Luces LED</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* --- VARIABLES Y CONFIGURACIÓN PREMIUM --- */
+      :root {
+        --bg-principal: #0d1117;
+        --bg-tarjeta: #161b22;
+        --border-color: #30363d;
+        --neon-cyan: #00f2fe;
+        --neon-purple: #7928ca;
+        --neon-pink: #ff007f;
+        --text-blanco: #ffffff;
+        --text-gris: #c9d1d9;
+        --wa-color: #25d366;
+        
+        /* Colores de marca unificados para redes sociales */
+        --brand-whatsapp: #25d366;
+        --brand-tiktok: #000000;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-principal);
+        color: var(--text-gris);
+        overflow-x: hidden;
+      }
+
+      /* --- NAVBAR --- */
+      nav {
+        background-color: rgba(13, 17, 23, 0.95);
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+      }
+
+      .logo {
+        color: var(--text-blanco);
+        font-size: 1.5rem;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+
+      .logo span {
+        color: var(--neon-cyan);
+        text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 25px;
+      }
+
+      .nav-links a {
+        color: var(--text-gris);
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--neon-cyan);
+      }
+
+      .cart-icon-container {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .cart-icon-container i {
+        font-size: 1.4rem;
+        color: var(--text-blanco);
+      }
+
+      .cart-count {
+        position: absolute;
+        top: -8px;
+        right: -10px;
+        background-color: var(--neon-pink);
+        color: white;
+        font-size: 0.75rem;
+        padding: 2px 6px;
+        border-radius: 50%;
+        font-weight: bold;
+      }
+
+      /* --- ARQUITECTURA DEL HEADER MULTI-SLIDER (3 IMÁGENES) --- */
+      .hero-slider {
+        position: relative;
+        height: 70vh;
+        width: 100%;
+        overflow: hidden;
+        background-color: #000;
+      }
+
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .slide.active {
+        opacity: 1;
+      }
+
+      .slide::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          rgba(13, 17, 23, 0.3),
+          rgba(13, 17, 23, 0.85)
+        );
+      }
+
+      .slide-content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        max-width: 800px;
+        padding: 0 20px;
+      }
+
+      .slide-content h1 {
+        color: var(--text-blanco);
+        font-size: 3rem;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      .slide-content p {
+        font-size: 1.2rem;
+        color: var(--neon-cyan);
+        margin-bottom: 25px;
+        text-shadow: 0 0 5px rgba(0, 242, 254, 0.3);
+      }
+
+      /* --- SECCIÓN CATÁLOGO --- */
+      .container {
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 0 20px;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2rem;
+        color: var(--text-blanco);
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        position: relative;
+      }
+
+      .section-title::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--neon-cyan),
+          var(--neon-purple)
+        );
+        margin: 10px auto 0 auto;
+        border-radius: 2px;
+      }
+
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+      }
+
+      /* MAQUETADO DE TARJETA CON PERSPECTIVA 3D (ESTILO TRIPO3D) */
+      .product-card {
+        perspective: 1000px;
+        cursor: pointer;
+      }
+
+      .product-card-inner {
+        background-color: var(--bg-tarjeta);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transform-style: preserve-3d;
+        transition:
+          transform 0.15s ease-out,
+          border-color 0.3s;
+      }
+
+      .product-card:hover .product-card-inner {
+        border-color: var(--neon-cyan);
+      }
+
+      .product-img {
+        max-width: 100%;
+        height: 200px;
+        object-fit: contain;
+        margin-bottom: 20px;
+        transform: translateZ(35px);
+        transition: transform 0.3s ease;
+      }
+
+      .product-title {
+        color: var(--text-blanco);
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        transform: translateZ(20px);
+      }
+
+      .product-price {
+        color: var(--neon-cyan);
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+        transform: translateZ(15px);
+      }
+
+      .add-btn {
+        background: linear-gradient(
+          135deg,
+          var(--neon-purple),
+          var(--neon-pink)
+        );
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transform: translateZ(25px);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        width: 100%;
+      }
+
+      .add-btn:hover {
+        box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+        transform: translateZ(25px) scale(1.03);
+      }
+
+      /* --- SECCIÓN MARCAS --- */
+      .brands-section {
+        background-color: #161b22;
+        padding: 40px 0;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .brands-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 30px;
+        padding: 0 20px;
+      }
+
+      .brand-item {
+        color: #8b949e;
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        filter: grayscale(100%);
+        opacity: 0.6;
+        transition: all 0.3s ease;
+      }
+
+      .brand-item:hover {
+        filter: grayscale(0%);
+        opacity: 1;
+        color: var(--text-blanco);
+      }
+
+      /* --- BOTÓN FLOTANTE WHATSAPP CON PULSO INFINITO --- */
+      .whatsapp-float {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: var(--wa-color);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        z-index: 999;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .whatsapp-float::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: var(--wa-color);
+        border-radius: 50%;
+        z-index: -1;
+        opacity: 0.6;
+        animation: pulseWave 2s infinite ease-in-out;
+      }
+
+      @keyframes pulseWave {
+        0% {
+          transform: scale(1);
+          opacity: 0.6;
+        }
+        100% {
+          transform: scale(1.6);
+          opacity: 0;
+        }
+      }
+
+      /* --- SLIDEOUT DEL CARRITO DE COMPRAS --- */
+      .cart-modal {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        height: 100%;
+        background-color: var(--bg-principal);
+        border-left: 1px solid var(--border-color);
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+        transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .cart-modal.open {
+        right: 0;
+      }
+
+      .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+      }
+
+      .cart-header h2 {
+        color: var(--text-blanco);
+        font-size: 1.3rem;
+      }
+      .close-cart {
+        font-size: 1.5rem;
+        color: var(--text-gris);
+        cursor: pointer;
+      }
+
+      .cart-items-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        margin-bottom: 20px;
+      }
+
+      .cart-item-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        background-color: var(--bg-tarjeta);
+        padding: 10px;
+        border-radius: 8px;
+      }
+
+      .checkout-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 15px;
+      }
+
+      .checkout-form input {
+        background-color: #161b22;
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        border-radius: 6px;
+        color: white;
+        font-size: 0.9rem;
+      }
+
+      .checkout-form input:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+      }
+
+      .checkout-btn {
+        background-color: var(--wa-color);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* --- FOOTER CON REDES SOCIALES ESTÉTICAMENTE IDÉNTICAS --- */
+      footer {
+        background-color: #090d13;
+        border-top: 1px solid var(--border-color);
+        padding: 40px 20px;
+        text-align: center;
+      }
+
+      .footer-logo {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 25px;
+      }
+      
+      .social-container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      /* Base visual unificada para homogeneidad UX/UI */
+      .social-icon {
+        position: relative;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background-color: var(--bg-tarjeta);
+        border: 1px solid var(--border-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--text-gris);
+        font-size: 1.4rem;
+        text-decoration: none;
+        overflow: hidden;
+        z-index: 1;
+        transition: 
+          transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      /* El icono vectorial interno se mantiene sobre la capa de expansión */
+      .social-icon i {
+        z-index: 2;
+        transition: transform 0.3s ease;
+      }
+
+      /* Efecto de máscara radial interna oculta de base */
+      .social-icon::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        transform: scale(0);
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1;
+      }
+
+      /* Comportamientos dinámicos individuales con la misma física */
+      
+      /* WhatsApp */
+      .social-icon.whatsapp:hover::before {
+        background-color: var(--brand-whatsapp);
+        transform: scale(1);
+      }
+      .social-icon.whatsapp:hover {
+        color: #ffffff;
+        border-color: var(--brand-whatsapp);
+        box-shadow: 0 0 20px rgba(37, 211, 102, 0.45);
+      }
+
+      /* Instagram */
+      .social-icon.instagram:hover::before {
+        background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        transform: scale(1);
+      }
+      .social-icon.instagram:hover {
+        color: #ffffff;
+        border-color: #dc2743;
+        box-shadow: 0 0 20px rgba(220, 39, 67, 0.45);
+      }
+
+      /* TikTok */
+      .social-icon.tiktok:hover::before {
+        background-color: var(--brand-tiktok);
+        transform: scale(1);
+      }
+      .social-icon.tiktok:hover {
+        color: #ffffff;
+        border-color: #ffffff;
+        box-shadow: 
+          0 0 20px rgba(255, 255, 255, 0.2),
+          3px 3px 0px #00f2fe,
+          -3px -3px 0px #ff007f;
+      }
+
+      /* Micro-rotación orgánica del icono interno */
+      .social-icon:hover i {
+        transform: scale(1.15) rotate(8deg);
+      }
+
+      .copyright {
+        font-size: 0.85rem;
+        color: #8b949e;
+      }
+
+      @media (max-width: 450px) {
+        .cart-modal {
+          width: 100%;
+          right: -100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">Smart<span>Lux</span></div>
+      <ul class="nav-links">
+        <li><a href="#catalogo">Catálogo</a></li>
+        <li><a href="#marcas">Marcas</a></li>
+      </ul>
+      <div class="cart-icon-container" onclick="toggleCart(true)">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="cart-count" id="cart-count">0</span>
+      </div>
+    </nav>
+
+    <header class="hero-slider">
+      <div
+        class="slide active"
+        style="
+          background-image: url('https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=1200');
+        "
+      >
+        <div class="slide-content">
+          <h1>Controla tu Espacio</h1>
+          <p>Ecosistemas Inteligentes, Routers y Conectividad sin Límites</p>
+        </div>
+      </div>
+      <div
+        class="slide"
+        style="
+          background-image: url('https://images.unsplash.com/photo-1565814636199-ae8133055c1c?auto=format&fit=crop&q=80&w=1200');
+        "
+      >
+        <div class="slide-content">
+          <h1>Ambientes que respiran</h1>
+          <p>Iluminación LED Inteligente Inmersiva y Personalizable</p>
+        </div>
+      </div>
+      <div
+        class="slide"
+        style="
+          background-image: url('https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&q=80&w=1200');
+        "
+      >
+        <div class="slide-content">
+          <h1>Ergonomía de Vanguardia</h1>
+          <p>Soportes de Alta Ingeniería para Teléfonos y Tablets</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="container" id="catalogo">
+      <h2 class="section-title">Catálogo de Productos</h2>
+      <div class="products-grid" id="products-container">
+        <p
+          style="text-align: center; grid-column: 1/-1; color: var(--neon-cyan)"
+        >
+          Conectando con base de datos en Google Sheets...
+        </p>
+      </div>
+    </section>
+
+    <section class="brands-section" id="marcas">
+      <div class="brands-container">
+        <div class="brand-item">SONOFF</div>
+        <div class="brand-item">TP-LINK</div>
+        <div class="brand-item">GOVEE</div>
+        <div class="brand-item">PHILIPS HUE</div>
+      </div>
+    </section>
+
+    <a class="whatsapp-float" onclick="toggleCart(true)">
+      <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <div class="cart-modal" id="cart-modal">
+      <div class="cart-header">
+        <h2>Tu Lista de Pedido</h2>
+        <i class="fa-solid fa-xmark close-cart" onclick="toggleCart(false)"></i>
+      </div>
+      <div class="cart-items-container" id="cart-items-list"></div>
+      <div style="border-top: 1px solid var(--border-color); padding-top: 15px">
+        <h3
+          style="
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+          "
+        >
+          <span>Total:</span> <span id="cart-total">$0.00</span>
+        </h3>
+        <form class="checkout-form" onsubmit="procesarPedidoWhatsApp(event)">
+          <input
+            type="text"
+            id="cust-name"
+            placeholder="Tu Nombre Completo"
+            required
+          />
+          <input
+            type="text"
+            id="cust-address"
+            placeholder="Dirección Macroscópica de Entrega"
+            required
+          />
+          <button type="submit" class="checkout-btn">
+            <i class="fa-brands fa-whatsapp"></i> Confirmar y Enviar Pedido
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-logo">SmartLux C.A.</div>
+      <div class="social-container">
+        <a
+          href="https://wa.me/58XXXXXXXXXX"
+          target="_blank"
+          class="social-icon whatsapp"
+          title="WhatsApp"
+          ><i class="fa-brands fa-whatsapp"></i
+        ></a>
+        <a
+          href="https://instagram.com"
+          target="_blank"
+          class="social-icon instagram"
+          title="Instagram"
+          ><i class="fa-brands fa-instagram"></i
+        ></a>
+        <a 
+          href="https://tiktok.com" 
+          target="_blank" 
+          class="social-icon tiktok"
+          title="TikTok"
+          ><i class="fa-brands fa-tiktok"></i
+        ></a>
+      </div>
+      <p class="copyright">
+        &copy; 2026 SmartLux. Todos los derechos reservados.
+      </p>
+    </footer>
+
+    <script>
+      // Configura aquí tu URL Web App del despliegue de Google Apps Script
+      const GOOGLE_SHEET_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbwGMUGy5oE1uvd7mb2EeVcumgy4GUBS3emuVF2dvwX_IMp6zHyxl_bFx1GRaUxUwEDa/exec";
+
+      let inventario = [];
+      let carrito = [];
+
+      // 1. CONTROL ROTATIVO DEL HEADER SLIDER
+      const slides = document.querySelectorAll(".slide");
+      let currentSlide = 0;
+      setInterval(() => {
+        slides[currentSlide].classList.remove("active");
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add("active");
+      }, 5000);
+
+      // 2. FETCH ASÍNCRONO CON CACHÉ (Stale-While-Revalidate)
+      async function cargarProductos() {
+        const cacheKey = "smartlux_inventory";
+        const cacheTimeKey = "smartlux_inventory_time";
+        const localCached = localStorage.getItem(cacheKey);
+        const localTime = localStorage.getItem(cacheTimeKey);
+
+        // Datos Mock integrados para visualización inmediata si falla o no está configurada la API
+        const dataRespaldo = [
+          {
+            id: "1",
+            nombre: "Cinta LED RGBIC Neón 5M",
+            precio: 35.0,
+            imagen:
+              "https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=400",
+          },
+          {
+            id: "2",
+            nombre: "Router WiFi-6 Archer AX55",
+            precio: 75.0,
+            imagen:
+              "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400",
+          },
+          {
+            id: "3",
+            nombre: "Módulo Inteligente Smart Home",
+            precio: 19.99,
+            imagen:
+              "https://images.unsplash.com/photo-1558002038-1055907df827?w=400",
+          },
+          {
+            id: "4",
+            nombre: "Soporte Ergonómico Premium Tablet",
+            precio: 25.5,
+            imagen:
+              "https://images.unsplash.com/photo-1547082299-de196ea013d6?w=400",
+          },
+        ];
+
+        if (localCached && localTime && Date.now() - localTime < 300000) {
+          inventario = JSON.parse(localCached);
+          renderizarCatalogo(inventario);
+          return;
+        }
+
+        try {
+          const res = await fetch(GOOGLE_SHEET_SCRIPT_URL);
+          if (res.ok) {
+            inventario = await res.json();
+            localStorage.setItem(cacheKey, JSON.stringify(inventario));
+            localStorage.setItem(cacheTimeKey, Date.now());
+          } else {
+            inventario = dataRespaldo;
+          }
+        } catch (e) {
+          inventario = dataRespaldo;
+        }
+        renderizarCatalogo(inventario);
+      }
+
+      // 3. GENERACIÓN DEL CATÁLOGO EN PANTALLA
+      function renderizarCatalogo(items) {
+        const container = document.getElementById("products-container");
+        container.innerHTML = "";
+        items.forEach((prod) => {
+          container.innerHTML += `
+                    <div class="product-card" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+                        <div class="product-card-inner">
+                            <img src="${prod.imagen}" alt="${prod.nombre}" class="product-img">
+                            <h3 class="product-title">${prod.nombre}</h3>
+                            <p class="product-price">$${parseFloat(prod.precio).toFixed(2)}</p>
+                            <button class="add-btn" onclick="agregarAlCarrito('${prod.id}')">Agregar al Carrito</button>
+                        </div>
+                    </div>
+                `;
+        });
+      }
+
+      // 4. CÁLCULO DE PERSPECTIVA HOLOGRÁFICA 3D (Tripo3D Efecto)
+      function tiltCard(event, card) {
+        const inner = card.querySelector(".product-card-inner");
+        const rect = card.getBoundingClientRect();
+        const x = event.clientX - rect.left - rect.width / 2;
+        const y = event.clientY - rect.top - rect.height / 2;
+
+        const rX = -(y / rect.height) * 22;
+        const rY = (x / rect.width) * 22;
+
+        inner.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`;
+        inner.style.boxShadow = `0 15px 30px rgba(0, 242, 254, 0.25)`;
+      }
+
+      function resetCard(card) {
+        const inner = card.querySelector(".product-card-inner");
+        inner.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        inner.style.boxShadow = "none";
+      }
+
+      // 5. OPERACIONES DEL CARRITO
+      function toggleCart(show) {
+        document.getElementById("cart-modal").classList.toggle("open", show);
+      }
+
+      function agregarAlCarrito(id) {
+        const producto = inventario.find((p) => p.id === id);
+        const existe = carrito.find((item) => item.id === id);
+        if (existe) {
+          existe.cantidad++;
+        } else {
+          carrito.push({ ...producto, cantidad: 1 });
+        }
+        actualizarInterfazCarrito();
+      }
+
+      function actualizarInterfazCarrito() {
+        const badge = document.getElementById("cart-count");
+        const lista = document.getElementById("cart-items-list");
+        const totalText = document.getElementById("cart-total");
+
+        let numItems = 0;
+        let total = 0;
+        lista.innerHTML = "";
+
+        carrito.forEach((item) => {
+          numItems += item.cantidad;
+          total += item.precio * item.cantidad;
+          lista.innerHTML += `
+                    <div class="cart-item-row">
+                        <div>
+                            <p style="color: white; font-weight: bold; font-size:0.9rem;">${item.nombre}</p>
+                            <p style="font-size: 0.8rem; color: var(--neon-cyan);">${item.cantidad}x $${parseFloat(item.precio).toFixed(2)}</p>
+                        </div>
+                        <i class="fa-solid fa-trash" style="color: var(--neon-pink); cursor: pointer;" onclick="eliminarDelCarrito('${item.id}')"></i>
+                    </div>
+                `;
+        });
+        badge.innerText = numItems;
+        totalText.innerText = `$${total.toFixed(2)}`;
+      }
+
+      // 6. FLUJO DE CIERRE DE PEDIDO CON PURGA DE SEGURIDAD EXIGIDA
+      function eliminarDelCarrito(id) {
+        carrito = carrito.filter((item) => item.id !== id);
+        actualizarInterfazCarrito();
+      }
+
+      function procesarPedidoWhatsApp(event) {
+        event.preventDefault();
+        if (carrito.length === 0) return alert("El carrito está vacío.");
+
+        const nombre = document.getElementById("cust-name").value;
+        const direccion = document.getElementById("cust-address").value;
+
+        let msg = `*NUEVO PEDIDO SMARTLUX*\n\n`;
+        msg += `*Cliente:* ${nombre}\n`;
+        msg += `*Dirección:* ${direccion}\n\n`;
+        msg += `*Detalle de Productos:*\n`;
+
+        let total = 0;
+        carrito.forEach((item) => {
+          msg += `- ${item.cantidad}x ${item.nombre} ($${parseFloat(item.precio).toFixed(2)} c/u)\n`;
+          total += item.precio * item.cantidad;
+        });
+        msg += `\n*Total General de la Orden:* $${total.toFixed(2)} USD`;
+
+        const urlFinal = `https://wa.me/584241234567?text=${encodeURIComponent(msg)}`;
+
+        // --- REGLA ESTRICTA DE PERSISTENCIA: LIMPIEZA INMEDIATA ---
+        carrito = [];
+        actualizarInterfazCarrito();
+        document.getElementById("cust-name").value = "";
+        document.getElementById("cust-address").value = "";
+        toggleCart(false);
+
+        // Redirección externa limpia
+        window.open(urlFinal, "_blank");
+      }
+
+      window.onload = cargarProductos;
+    </script>
+  </body>
+</html>
