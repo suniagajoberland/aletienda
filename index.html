@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SmartLux | E-commerce Premium de Domótica y Luces LED</title>
+    <title>Todo para tu uso | E-commerce Premium de Domótica y Luces LED</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -59,9 +59,9 @@
 
       .logo {
         color: var(--text-blanco);
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         font-weight: bold;
-        letter-spacing: 1.2px;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
         white-space: nowrap;
       }
@@ -603,7 +603,7 @@
   </head>
   <body>
     <nav>
-      <div class="logo">Smart<span>Lux</span></div>
+      <div class="logo">Todo para tu <span>uso</span></div>
       <ul class="nav-links">
         <li><a href="#catalogo">Catálogo</a></li>
       </ul>
@@ -716,7 +716,7 @@
     </div>
 
     <footer>
-      <div class="footer-logo">SmartLux C.A.</div>
+      <div class="footer-logo">Todo para tu uso</div>
       <div class="social-container">
         <a
           href="https://wa.me/584143693311"
@@ -741,7 +741,7 @@
         ></a>
       </div>
       <p class="copyright">
-        &copy; 2026 SmartLux. Todos los derechos reservados.
+        &copy; 2026 Todo para tu uso. Todos los derechos reservados.
       </p>
     </footer>
 
@@ -927,6 +927,7 @@
         validarFormulario();
       }
 
+      // Limpiar los datos del formulario y el carrito una vez se haga el pedido por whatsapp.
       function agregarAlCarrito(id) {
         const producto = inventario.find((p) => p.id == id);
         if (!producto) return;
@@ -1004,7 +1005,7 @@
         const direccion = document.getElementById("cust-address").value;
         const telefono = document.getElementById("cust-phone").value;
 
-        let msg = `*NUEVO PEDIDO SMARTLUX*\n\n`;
+        let msg = `*NUEVO PEDIDO TODO PARA TU USO*\n\n`;
         msg += `*Cliente:* ${nombre}\n`;
         msg += `*Cédula:* ${cedula}\n`;
         msg += `*Teléfono:* ${telefono}\n`;
