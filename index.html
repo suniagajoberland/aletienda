@@ -205,14 +205,35 @@
         border-radius: 2px;
       }
 
-      /* --- SECCIÓN FILTROS AUTOMÁTICOS --- */
+      /* --- SECCIÓN FILTROS AUTOMÁTICOS CON SCROLL HIDDEN --- */
       .filter-container {
         display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
         gap: 12px;
         margin-bottom: 35px;
-        padding: 10px 0;
+        padding: 10px 5px;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch; /* Desplazamiento inercial suave en iOS */
+      }
+
+      /* Ocultar barra de desplazamiento en Chrome, Safari y Opera */
+      .filter-container::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Ocultar barra de desplazamiento en IE, Edge y Firefox */
+      .filter-container {
+        -ms-overflow-style: none;  /* IE y Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+
+      /* Centrar los filtros de forma adaptativa cuando quepan en pantalla */
+      @media (min-width: 768px) {
+        .filter-container {
+          justify-content: center;
+        }
       }
 
       .filter-btn {
@@ -227,6 +248,7 @@
         transition: all 0.3s ease;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        flex-shrink: 0; /* Evita que los botones se deformen o encojan */
       }
 
       .filter-btn:hover {
@@ -247,13 +269,33 @@
         gap: 30px;
       }
 
-      /* TARJETAS CON EFECTO DE PERSPECTIVA 3D */
+      /* ESTRUCTURA 3D FLIP CARD (GIRO 180 GRADOS) */
       .product-card {
+        background-color: transparent;
+        height: 440px;
         perspective: 1000px;
-        cursor: pointer;
       }
 
       .product-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
+      }
+
+      /* Girar la tarjeta al pasar el mouse */
+      .product-card:hover .product-card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .product-front, .product-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
         background-color: var(--bg-tarjeta);
         border: 1px solid var(--border-color);
         border-radius: 16px;
@@ -261,15 +303,20 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        text-align: center;
-        transform-style: preserve-3d;
-        transition:
-          transform 0.15s ease-out,
-          border-color 0.3s;
-        height: 100%;
+        justify-content: space-between;
       }
 
-      .product-card:hover .product-card-inner {
+      .product-front {
+        z-index: 2;
+        transform: rotateY(0deg);
+      }
+
+      .product-back {
+        transform: rotateY(180deg);
+        border-color: var(--neon-purple);
+      }
+
+      .product-card:hover .product-front {
         border-color: var(--neon-cyan);
       }
 
@@ -279,22 +326,18 @@
         font-size: 0.75rem;
         padding: 4px 10px;
         border-radius: 20px;
-        margin-bottom: 15px;
         text-transform: uppercase;
         letter-spacing: 1px;
         border: 1px solid rgba(0, 242, 254, 0.2);
-        transform: translateZ(15px);
       }
 
-      /* Contenedor multimedia para unificar tamaños */
+      /* Contenedores multimedia */
       .media-container {
         width: 100%;
         height: 180px;
-        margin-bottom: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transform: translateZ(35px);
         overflow: hidden;
       }
 
@@ -302,10 +345,23 @@
         max-width: 100%;
         height: 100%;
         object-fit: contain;
-        transition: transform 0.3s ease;
       }
 
-      /* Estilos específicos para el visor 3D */
+      .video-container {
+        width: 100%;
+        height: 180px;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #000;
+        border: 1px solid var(--border-color);
+      }
+
+      .video-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
       model-viewer {
         width: 100%;
         height: 100%;
@@ -316,8 +372,6 @@
       .product-title {
         color: var(--text-blanco);
         font-size: 1.1rem;
-        margin-bottom: 10px;
-        transform: translateZ(20px);
         min-height: 44px;
         display: flex;
         align-items: center;
@@ -328,10 +382,9 @@
         color: var(--neon-cyan);
         font-size: 1.25rem;
         font-weight: bold;
-        margin-bottom: 15px;
-        transform: translateZ(15px);
       }
 
+      /* Botones */
       .add-btn {
         background: linear-gradient(
           135deg,
@@ -344,17 +397,43 @@
         border-radius: 8px;
         font-weight: bold;
         cursor: pointer;
-        transform: translateZ(25px);
-        transition:
-          transform 0.2s,
-          box-shadow 0.2s;
+        transition: transform 0.2s, box-shadow 0.2s;
         width: 100%;
-        margin-top: auto;
       }
 
       .add-btn:hover {
         box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-        transform: translateZ(25px) scale(1.02);
+        transform: scale(1.02);
+      }
+
+      .consult-wa-btn {
+        background-color: var(--wa-color);
+        color: white;
+        text-decoration: none;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .consult-wa-btn:hover {
+        box-shadow: 0 0 15px rgba(37, 211, 102, 0.4);
+        transform: scale(1.02);
+      }
+
+      .back-info-text {
+        font-size: 0.85rem;
+        color: var(--text-gris);
+        margin: 10px 0;
+        line-height: 1.3;
       }
 
       /* --- BOTÓN FLOTANTE WHATSAPP --- */
@@ -775,7 +854,6 @@
               return;
             }
             
-            // Genera la botonera de filtros basados en los datos actuales
             crearFiltrosCategorias(inventario);
             renderizarCatalogo(inventario);
           } else {
@@ -788,12 +866,10 @@
         }
       }
 
-      // Extrae categorías únicas y genera el HTML de los botones automáticamente
       function crearFiltrosCategorias(items) {
         const filterContainer = document.getElementById("categories-filter-container");
         if (!items || items.length === 0) return;
 
-        // Set para almacenar valores únicos y limpiar espacios
         const categoriasSet = new Set();
         items.forEach(prod => {
           if (prod.categoria) {
@@ -801,7 +877,6 @@
           }
         });
 
-        // Estructura base con la opción global
         let filtrosHTML = `<button class="filter-btn active" data-category="todas" onclick="filtrarCatalogo('todas', this)">Todas</button>`;
 
         categoriasSet.forEach(cat => {
@@ -811,18 +886,14 @@
         filterContainer.innerHTML = filtrosHTML;
       }
 
-      // Cambia el estado del filtro y actualiza la visualización
       function filtrarCatalogo(categoria, botonElemento) {
         categoriaSeleccionada = categoria;
-        
-        // Manejo estético de clase activa
         document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
         botonElemento.classList.add("active");
-        
         renderizarCatalogo(inventario);
       }
 
-      // Renderizado Inteligente con soporte para filtrado dinámico
+      // Renderizado con soporte para Flip de 180 grados y Video Trasero con Autoplay corregido
       function renderizarCatalogo(items) {
         const container = document.getElementById("products-container");
         container.innerHTML = "";
@@ -832,7 +903,6 @@
           return;
         }
 
-        // Aplicamos el filtro de categoría seleccionado
         const itemsFiltrados = items.filter(prod => {
           if (categoriaSeleccionada.toLowerCase() === "todas") return true;
           return prod.categoria && prod.categoria.trim().toLowerCase() === categoriaSeleccionada.toLowerCase();
@@ -849,24 +919,25 @@
           let categoryProducto = prod.categoria || "General";
 
           let precioCrudo = prod.costo || prod.precio || 0;
-          let precioFormateado = parseFloat(
-            String(precioCrudo).replace(/[^0-9.-]+/g, ""),
-          );
+          let precioFormateado = parseFloat(String(precioCrudo).replace(/[^0-9.-]+/g, ""));
           if (isNaN(precioFormateado)) precioFormateado = 0;
 
+          // Imagen Frontal
           let urlImagen = String(prod.imagen || "").trim();
           if (!urlImagen) {
-            urlImagen =
-              "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=400";
+            urlImagen = "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=400";
+          }
+
+          // Video Posterior (Columna 'video' en tu Google Sheets)
+          let urlVideo = String(prod.video || "").trim();
+          if (!urlVideo) {
+            urlVideo = "https://assets.mixkit.co/videos/preview/mixkit-smart-home-interface-screens-42352-large.mp4";
           }
 
           let urlModelo3D = String(prod.modelo3d || "").trim();
           let mediaHTML = "";
 
-          if (
-            urlModelo3D &&
-            (urlModelo3D.endsWith(".glb") || urlModelo3D.endsWith(".gltf"))
-          ) {
+          if (urlModelo3D && (urlModelo3D.endsWith(".glb") || urlModelo3D.endsWith(".gltf"))) {
             mediaHTML = `
               <model-viewer 
                 src="${urlModelo3D}" 
@@ -885,49 +956,46 @@
             `;
           }
 
+          let mensajeWhatsAppProducto = encodeURIComponent(
+            `Hola, me interesa obtener más información sobre el producto específico: *${nombreProducto}* que vi en su catálogo web.`
+          );
+
           container.innerHTML += `
-            <div class="product-card" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+            <div class="product-card">
                 <div class="product-card-inner">
-                    <span class="product-tag">${categoryProducto}</span>
-                    <div class="media-container">
-                       ${mediaHTML}
+                    <div class="product-front">
+                        <span class="product-tag">${categoryProducto}</span>
+                        <div class="media-container">
+                           ${mediaHTML}
+                        </div>
+                        <h3 class="product-title">${nombreProducto}</h3>
+                        <p class="product-price">$${precioFormateado.toFixed(2)}</p>
+                        <button class="add-btn" onclick="event.stopPropagation(); agregarAlCarrito('${idProducto}')">Agregar al Carrito</button>
                     </div>
-                    <h3 class="product-title">${nombreProducto}</h3>
-                    <p class="product-price">$${precioFormateado.toFixed(2)}</p>
-                    <button class="add-btn" onclick="agregarAlCarrito('${idProducto}')">Agregar al Carrito</button>
+                    
+                    <div class="product-back">
+                        <span class="product-tag" style="background: rgba(121, 40, 202, 0.2); color: var(--neon-cyan); border-color: var(--neon-purple);">Vista de Video</span>
+                        <div class="video-container">
+                            <video src="${urlVideo}" loop muted playsinline autoplay></video>
+                        </div>
+                        <h3 class="product-title" style="font-size: 1rem; min-height: auto;">${nombreProducto}</h3>
+                        <p class="back-info-text">Demostración en tiempo real del producto.</p>
+                        <a href="https://wa.me/584143693311?text=${mensajeWhatsAppProducto}" target="_blank" class="consult-wa-btn" onclick="event.stopPropagation();">
+                            <i class="fa-brands fa-whatsapp"></i> Consultar Producto
+                        </a>
+                    </div>
                 </div>
             </div>
           `;
         });
       }
 
-      // Efecto Visual 3D Holográfico para Tarjetas
-      function tiltCard(event, card) {
-        if (event.target.closest("model-viewer")) return;
-
-        const inner = card.querySelector(".product-card-inner");
-        const rect = card.getBoundingClientRect();
-        const x = event.clientX - rect.left - rect.width / 2;
-        const y = event.clientY - rect.top - rect.height / 2;
-        const rX = -(y / rect.height) * 15;
-        const rY = (x / rect.width) * 15;
-        inner.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`;
-        inner.style.boxShadow = `0 15px 30px rgba(0, 242, 254, 0.25)`;
-      }
-
-      function resetCard(card) {
-        const inner = card.querySelector(".product-card-inner");
-        inner.style.transform = `rotateX(0deg) rotateY(0deg)`;
-        inner.style.boxShadow = "none";
-      }
-
-      // Gestión Dinámica de Carrito
+      // Gestión de Carrito
       function toggleCart(show) {
         document.getElementById("cart-modal").classList.toggle("open", show);
         validarFormulario();
       }
 
-      // Limpiar los datos del formulario y el carrito una vez se haga el pedido por whatsapp.
       function agregarAlCarrito(id) {
         const producto = inventario.find((p) => p.id == id);
         if (!producto) return;
@@ -935,8 +1003,7 @@
         const existe = carrito.find((item) => item.id == id);
         let nombre = producto.nombre || "Producto";
         let precioCrudo = producto.costo || producto.precio || 0;
-        let precio =
-          parseFloat(String(precioCrudo).replace(/[^0-9.-]+/g, "")) || 0;
+        let precio = parseFloat(String(precioCrudo).replace(/[^0-9.-]+/g, "")) || 0;
 
         if (existe) {
           existe.cantidad++;
